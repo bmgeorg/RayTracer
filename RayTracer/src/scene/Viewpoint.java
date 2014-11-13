@@ -139,8 +139,8 @@ public class Viewpoint {
 	final static double FRAME_DEPTH = 10;
 	final static int IMAGE_WIDTH = 500;
 	final static int IMAGE_HEIGHT = 500;
-	final static Vector3 POSITION = new Vector3();
-	final static Vector3 FRONT_ORIENTATION = new Vector3(0, 0, 1);
+	final static Vector3 POSITION = new Vector3(0, 0, 10);
+	final static Vector3 FRONT_ORIENTATION = new Vector3(0, 0, -1);
 	final static Vector3 DOWN_ORIENTATION = new Vector3(0, -1, 0);
 	
 	static Viewpoint defaultViewpoint = null;
