@@ -14,7 +14,7 @@ public class HitpointDataTest {
 		Assert.assertFalse(a.isHit());
 		Assert.assertNull(a.getPosition());
 		Assert.assertNull(a.getuNormal());
-		
+
 		Vector3 p = new Vector3(3, 3, 3);
 		Vector3 n = new Vector3(0, 0, 1);
 		HitpointData b = new HitpointData(p, n, 5);
