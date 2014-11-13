@@ -3,6 +3,7 @@ package scene;
 import java.util.ArrayList;
 
 import ppm.Pixel;
+import sceneObjects.SceneObject;
 
 //mutable, transparent
 public class Scene {

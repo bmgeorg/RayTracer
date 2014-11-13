@@ -30,11 +30,12 @@ public class ViewpointTest {
 		for(int i = 0; i < IMAGE_HEIGHT; i++) {
 			for(int j = 0; j < IMAGE_WIDTH; j++) {
 				Vector3 ray = vp.fireRay(j, i);
+				Assert.assertTrue(ray.isUnit());
 				content += String.format("%.10f %.10f %.10f ", ray.getX(), ray.getY(), ray.getZ());
 			}
 			content += "\n";
 		}
-
+		
 		Assert.assertTrue(TestUtils.compareStringWithFile(testFilesDir + "centered10x10rays", content));
 	}
 

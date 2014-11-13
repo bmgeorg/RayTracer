@@ -30,6 +30,7 @@ final public class HitpointData {
 		this.hit = true;
 		this.position = position;
 		this.uNormal = uNormal;
+		this.distance = distance;
 	}
 	
 	public boolean isHit() {

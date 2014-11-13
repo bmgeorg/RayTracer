@@ -101,6 +101,9 @@ public class Viewpoint {
 	 * Pre:
 	 * 1. 0 <= y < imageHeight
 	 * 2. 0 <= x < imageWidth
+	 * 
+	 * Post:
+	 * 1. result is unit
 	 */
 	public Vector3 fireRay(int x, int y) {
 		assert y >= 0;
@@ -125,9 +128,9 @@ public class Viewpoint {
 		double cfy = fy - frameHeight/2;
 		double cfx = fx - frameWidth/2;
 		
-		Vector3 result = frameCenter.add(uDownOrientation.scale(cfy)).add(uRightOrientation.scale(cfx));
+		Vector3 coordPos = frameCenter.add(uDownOrientation.scale(cfy)).add(uRightOrientation.scale(cfx));
 		
-		return result;
+		return coordPos.sub(position).unit();
 	}
 	
 	/* for debugging */
