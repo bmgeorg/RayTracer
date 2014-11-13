@@ -13,6 +13,7 @@ final public class HitpointData {
 		}
 		return noHit;
 	}
+
 	//no hit constructor
 	private HitpointData() {
 		this.hit = false;
