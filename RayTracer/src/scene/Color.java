@@ -46,10 +46,20 @@ public class Color {
 	}
 	
 	/* operations */
+	/*Post:
+	 * 1. clamps r to [0, 1]
+	 * 2. clamps g to [0, 1]
+	 * 3. clamps b to [0, 1]
+	 */
 	public Color scale(double factor) {
 		return new Color(r*factor, g*factor, b*factor);
 	}
 	
+	/*Post:
+	 * 1. clamps r to [0, 1]
+	 * 2. clamps g to [0, 1]
+	 * 3. clamps b to [0, 1]
+	 */
 	public Color add(Color other) {
 		return new Color(r+other.r, g+other.g, b+other.b);
 	}

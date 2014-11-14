@@ -47,9 +47,9 @@ public class Scene {
 		
 		for(int row = 0; row < viewpoint.getImageHeight(); row++) {
 			for(int col = 0; col < viewpoint.getImageWidth(); col++) {
-				Vector3 ray = viewpoint.fireRay(row, col);
+				Vector3 uRay = viewpoint.fireRay(row, col);
 				
-				HitpointData closestHit = getClosestHit(viewpoint.getPosition(), ray);
+				HitpointData closestHit = getClosestHit(viewpoint.getPosition(), uRay);
 				if(closestHit != null) {
 					image[row][col] = makePixel(closestHit);
 					
@@ -66,17 +66,35 @@ public class Scene {
 	}
 	
 	private Pixel makePixel(HitpointData hitpoint) {
+		assert hitpoint.isHit();
 		Color finalColor = new Color(0, 0, 0);
-		Color baseColor = hitpoint.getColor();
 		
-		double ambient = hitpoint.getLighting().getAmbient();
-		double diffuse = hitpoint.getLighting().getDiffuse();
-		double spectral = hitpoint.getLighting().getSpectral();
+		Color ambient = hitpoint.getShading().getAmbient();
+		Color diffuse = hitpoint.getShading().getDiffuse();
+		Color specular = hitpoint.getShading().getSpecular();
 		
 		//ambient
-		finalColor = finalColor.add(baseColor.scale(ambient));
+		finalColor = finalColor.add(calcAmbient(hitpoint, ambient));
+		finalColor = finalColor.add(calcDiffuse(hitpoint, diffuse));
+		finalColor = finalColor.add(calcSpecular(hitpoint, specular));
 		
 		return new Pixel(finalColor);
+	}
+	
+	private Color calcAmbient(HitpointData hitpoint, Color ambient) {
+		return ambient;
+	}
+	
+	private Color calcDiffuse(HitpointData hitpoint, Color diffuse) {
+		double cosOfAngle = -hitpoint.getuIncoming().dot(hitpoint.getuNormal());
+		assert cosOfAngle > 0;
+		
+		return diffuse.scale(cosOfAngle);
+	}
+	
+	private Color calcSpecular(HitpointData hitpoint, Color diffuse) {
+		
+		return Color.black;
 	}
 	
 	private HitpointData getClosestHit(Vector3 base, Vector3 ray) {

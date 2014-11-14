@@ -3,10 +3,9 @@ package scene;
 //Immutable
 final public class HitpointData {
 	private boolean hit;
-	private Vector3 position, uNormal;
+	private Vector3 position, uNormal, uIncoming;
 	private double distance;
-	private Lighting lighting;
-	private Color color;
+	private Shading shading;
 	
 	private static HitpointData noHit;
 	public static HitpointData getNoHit() {
@@ -25,16 +24,18 @@ final public class HitpointData {
 	
 	/*Pre:
 	 * 1. uNormal is unit
+	 * 2. uIncoming is unit
 	 */
-	public HitpointData(Vector3 position, Vector3 uNormal, double distance, Color color, Lighting lighting) {
+	public HitpointData(Vector3 position, Vector3 uNormal, Vector3 uIncoming, double distance, Shading shading) {
 		assert uNormal.isUnit();
+		assert uIncoming.isUnit();
 		
 		this.hit = true;
 		this.position = position;
 		this.uNormal = uNormal;
+		this.uIncoming = uIncoming;
 		this.distance = distance;
-		this.color = color;
-		this.lighting = lighting;
+		this.shading = shading;
 	}
 	
 	public boolean isHit() {
@@ -46,14 +47,14 @@ final public class HitpointData {
 	public Vector3 getuNormal() {
 		return uNormal;
 	}
+	public Vector3 getuIncoming() {
+		return uIncoming;
+	}
 	public double getDistance() {
 		return distance;
 	}
-	public Lighting getLighting() {
-		return lighting;
-	}
-	public Color getColor() {
-		return color;
+	public Shading getShading() {
+		return shading;
 	}
 	
 	/* overridden methods */
@@ -62,9 +63,9 @@ final public class HitpointData {
 		result = "HitpointData" +
 				" position: " + position.toString() +
 				" uNormal: " + uNormal.toString() +
+				" uIncoming: " + uIncoming.toString() +
 				" distance: " + String.valueOf(distance) +
-				" lighting: " + lighting.toString() + 
-				" color: " + color.toString();
+				" shading: " + shading.toString();
 		return result;
 	}
 	

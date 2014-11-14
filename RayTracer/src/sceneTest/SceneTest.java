@@ -7,7 +7,7 @@ import org.junit.Test;
 import ppm.PPMLibrary;
 import ppm.Pixel;
 import scene.Color;
-import scene.Lighting;
+import scene.Shading;
 import scene.Scene;
 import scene.Vector3;
 import scene.Viewpoint;
@@ -24,11 +24,11 @@ public class SceneTest {
 		s.setViewpoint(Viewpoint.getDefaultViewpoint());
 		Vector3 c = new Vector3(0, 0, -5);
 		double radius = 3;
-		s.addSceneObject(new Sphere(c, radius, Color.green, new Lighting(0, 1, 0)));
+		s.addSceneObject(new Sphere(c, radius, new Shading(Color.green, Color.green, Color.green)));
 		Pixel image[][] = s.render();
-		PPMLibrary.writePPMImage(testFilesDir + "sphereTest.ppm", image);
-		Assert.assertTrue(TestUtils.filesEqual(testFilesDir + "sphere.ppm", testFilesDir + "sphereTest.ppm"));
-		TestUtils.removeFile(testFilesDir + "sphereTest.ppm");
+		PPMLibrary.writePPMImage(testFilesDir + "flatSphereTest.ppm", image);
+		Assert.assertTrue(TestUtils.filesEqual(testFilesDir + "flatSphere.ppm", testFilesDir + "flatSphereTest.ppm"));
+		TestUtils.removeFile(testFilesDir + "flatSphereTest.ppm");
 	}
 	
 	@Test
