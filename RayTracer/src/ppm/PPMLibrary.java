@@ -5,8 +5,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
 public class PPMLibrary {
-	/*
-	 * Pre:
+	/*Pre:
 	 * 1. pixels are in row major order
 	 * 2. pixels.length > 0
 	 * 3. pixels[0].length > 0
@@ -35,7 +34,7 @@ public class PPMLibrary {
 			assert pixels[row].length == width;
 			for(int col = 0; col < width; col++) {
 				Pixel p = pixels[row][col];
-				writer.format("%d %d %d\n", p.getR(), p.getB(), p.getB());
+				writer.format("%d %d %d\n", p.getR(), p.getG(), p.getB());
 			}
 		}
 		

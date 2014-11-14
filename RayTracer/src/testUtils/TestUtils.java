@@ -53,9 +53,9 @@ public class TestUtils {
 	
 	public static void removeFile(String filePath) {
 		try {
-			Files.deleteIfExists(Paths.get(filePath + ".test"));
+			Files.deleteIfExists(Paths.get(filePath));
 		} catch (IOException e) {
-			System.err.println("Could not delete test file: " + filePath + ".test");
+			System.err.println("Could not delete file: " + filePath);
 			e.printStackTrace();
 		}
 	}

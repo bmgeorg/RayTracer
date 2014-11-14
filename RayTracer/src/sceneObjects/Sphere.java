@@ -1,6 +1,9 @@
 package sceneObjects;
 
+
+import scene.Color;
 import scene.HitpointData;
+import scene.Lighting;
 import scene.Vector3;
 
 //Immutable
@@ -8,8 +11,12 @@ final public class Sphere extends SceneObject {
 	private double radius;
 	private double NO_HIT = -1;
 	
-	public Sphere(Vector3 position, double radius) {
-		super(position);
+	/*Pre:
+	 * 1. radius > 0
+	 */
+	public Sphere(Vector3 position, double radius, Color color, Lighting lighting) {
+		super(position, color, lighting);
+		assert radius > 0;
 		this.radius = radius;
 	}
 	
@@ -48,8 +55,10 @@ final public class Sphere extends SceneObject {
 		double t2 = (-b + Math.sqrt(discriminant))/(2*a);
 		if(t1 >= 0)
 			return t1;
-		else
+		else if(t2 >= 0)
 			return t2;
+		else
+			return NO_HIT;
 	}
 	
 	/*Pre:
@@ -64,9 +73,11 @@ final public class Sphere extends SceneObject {
 		assert uDir.isUnit();
 		
 		double distance = distanceToHitpoint(base, uDir);
+		if(distance == NO_HIT)
+			return HitpointData.getNoHit();
 		Vector3 hitPoint = base.add(uDir.scale(distance));
 		Vector3 normal = hitPoint.sub(position).unit();
-		HitpointData result = new HitpointData(hitPoint, normal, distance);
+		HitpointData result = new HitpointData(hitPoint, normal, distance, baseColor, baseLighting);
 		
 		return result;
 	}

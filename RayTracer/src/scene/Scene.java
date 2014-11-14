@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import ppm.Pixel;
 import sceneObjects.SceneObject;
 
-//mutable, transparent
+//mutable
 public class Scene {
 	private ArrayList<SceneObject> sceneObjects;
 	private Viewpoint viewpoint;
@@ -14,7 +14,7 @@ public class Scene {
 	public Scene() {
 		sceneObjects = new ArrayList<SceneObject>();
 		viewpoint = null;
-		backgroundColor = new Pixel();
+		backgroundColor = new Pixel(Color.black);
 	}
 	
 	public Viewpoint getViewpoint() {
@@ -66,7 +66,17 @@ public class Scene {
 	}
 	
 	private Pixel makePixel(HitpointData hitpoint) {
-		return new Pixel(200, 100, 0);
+		Color finalColor = new Color(0, 0, 0);
+		Color baseColor = hitpoint.getColor();
+		
+		double ambient = hitpoint.getLighting().getAmbient();
+		double diffuse = hitpoint.getLighting().getDiffuse();
+		double spectral = hitpoint.getLighting().getSpectral();
+		
+		//ambient
+		finalColor = finalColor.add(baseColor.scale(ambient));
+		
+		return new Pixel(finalColor);
 	}
 	
 	private HitpointData getClosestHit(Vector3 base, Vector3 ray) {
