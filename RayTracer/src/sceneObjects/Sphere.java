@@ -78,7 +78,7 @@ final public class Sphere extends SceneObject {
 			return HitpointData.getNoHit();
 		Vector3 hitPoint = base.add(uDir.scale(distance));
 		Vector3 normal = hitPoint.sub(position).unit();
-		HitpointData result = new HitpointData(hitPoint, normal, uDir, distance, baseShading);
+		HitpointData result = new HitpointData(hitPoint, normal, distance, baseShading, this);
 		
 		return result;
 	}

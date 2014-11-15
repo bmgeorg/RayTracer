@@ -22,7 +22,6 @@ public class SphereTest {
 		Assert.assertTrue(hit.getPosition().equalsWithTol(new Vector3(0, 0, 0)));
 		Assert.assertEquals(1, hit.getDistance(), Vector3.ABSOLUTE_TOLERANCE);
 		Assert.assertTrue(hit.getuNormal().equalsWithTol(new Vector3(0, 0, 1)));
-		Assert.assertTrue(hit.getuIncoming().equals(dir));
 	}
 
 }
