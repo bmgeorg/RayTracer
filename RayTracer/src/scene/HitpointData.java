@@ -5,7 +5,7 @@ import sceneObjects.SceneObject;
 //Immutable
 final public class HitpointData {
 	private boolean hit;
-	private Vector3 position, uNormal;
+	private Vector3 position, uNormal, uIncoming;
 	private double distance;
 	private Shading shading;
 	private SceneObject hitObject;
@@ -27,11 +27,15 @@ final public class HitpointData {
 	
 	/*Pre:
 	 * 1. uNormal is unit
-	 * 2. parameter != null for all parameters
-	 * 3. distance >= 0
+	 * 2. uIncoming is unit
+	 * 3. parameter != null for all parameters
+	 * 4. distance >= 0
 	 */
-	public HitpointData(Vector3 position, Vector3 uNormal, double distance, Shading shading, SceneObject hitObject) {
+	public HitpointData(Vector3 position, Vector3 uNormal, Vector3 uIncoming, double distance, Shading shading, SceneObject hitObject) {
 		assert uNormal != null;
+		assert uIncoming != null;
+		assert uNormal.isUnit();
+		assert uIncoming.isUnit();
 		assert position != null;
 		assert distance >= 0;
 		assert shading != null;
@@ -40,6 +44,7 @@ final public class HitpointData {
 		this.hit = true;
 		this.position = position;
 		this.uNormal = uNormal;
+		this.uIncoming = uIncoming;
 		this.distance = distance;
 		this.shading = shading;
 		this.hitObject = hitObject;
@@ -53,6 +58,9 @@ final public class HitpointData {
 	}
 	public Vector3 getuNormal() {
 		return uNormal;
+	}
+	public Vector3 getuIncoming() {
+		return uIncoming;
 	}
 	public double getDistance() {
 		return distance;
@@ -73,6 +81,7 @@ final public class HitpointData {
 			result = "HitpointData" +
 					" position: " + position.toString() +
 					" uNormal: " + uNormal.toString() +
+					" uIncoming: " + uIncoming.toString() +
 					" distance: " + String.valueOf(distance) +
 					" shading: " + shading.toString() +
 					" hit object: " + hitObject.toString();

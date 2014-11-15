@@ -89,6 +89,13 @@ final public class Vector3 {
 		return new Vector3(x*factor, y*factor, z*factor);
 	}
 	
+	public Vector3 projectTo(Vector3 v) {
+		if(v.isZero())
+			return new Vector3(0, 0, 0);
+		double projectionLength = this.dot(v)/v.length();
+		return v.unit().scale(projectionLength);
+	}
+	
 	/* information */
 	
 	public boolean isZero() {

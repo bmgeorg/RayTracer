@@ -7,6 +7,9 @@ import sceneObjects.SceneObject;
 
 //mutable
 public class Scene {
+	private static final int NUM_SPECULAR_REFLECTIONS = 1; // [0, inf]
+	private static final double MIN_DISTANCE_OF_REFLECTION = .01;
+	
 	private ArrayList<SceneObject> sceneObjects;
 	private ArrayList<Light> lights;
 	private Viewpoint viewpoint;
@@ -64,8 +67,8 @@ public class Scene {
 				}
 				//TODO: min distance forms a bowl currently, instead of the plane of the screen
 				HitpointData closestHit = getClosestHit(viewpoint.getPosition(), uRay, viewpoint.getFrameDepth());
-				if(closestHit != null) {
-					image[row][col] = makePixel(closestHit);
+				if(closestHit != HitpointData.getNoHit()) {
+					image[row][col] = new Pixel(makeColor(closestHit, NUM_SPECULAR_REFLECTIONS));
 
 					//Debugging Start
 					if(Math.abs(closestHit.getDistance() - viewpoint.getFrameDepth()) < Vector3.ABSOLUTE_TOLERANCE)
@@ -79,8 +82,16 @@ public class Scene {
 		return image;
 	}
 
-	private Pixel makePixel(HitpointData hitpoint) {
+	/*Pre:
+	 * 1. hitpoint != null
+	 * 2. hitpoint.isHit() = true
+	 * 2. numReflectionsLeft >= 0
+	 */
+	private Color makeColor(HitpointData hitpoint, int numReflectionsLeft) {
+		assert hitpoint != null;
 		assert hitpoint.isHit();
+		assert numReflectionsLeft >= 0;
+
 		Color finalColor = new Color(0, 0, 0);
 
 		Color ambient = hitpoint.getShading().getAmbient();
@@ -90,9 +101,9 @@ public class Scene {
 		//ambient
 		finalColor = finalColor.add(calcAmbient(hitpoint, ambient));
 		finalColor = finalColor.add(calcDiffuse(hitpoint, diffuse));
-		finalColor = finalColor.add(calcSpecular(hitpoint, specular));
+		finalColor = finalColor.add(calcSpecular(hitpoint, specular, numReflectionsLeft));
 
-		return new Pixel(finalColor);
+		return finalColor;
 	}
 
 	private Color calcAmbient(HitpointData hitpoint, Color ambient) {
@@ -106,9 +117,9 @@ public class Scene {
 			//TODO: Optimization: never calculate closestHit for any given light more than once
 			HitpointData hitPointOfLightRay = getClosestHit(light.getPosition(), uRay, 0);
 			//If light hits point
-			if(		hitPointOfLightRay != null &&
-					hitPointOfLightRay.getHitObject() == hitpoint.getHitObject() /*&
-					/*hitPointOfLightRay.getPosition().equalsWithTol(hitpoint.getPosition())*/) {
+			if(		hitPointOfLightRay != HitpointData.getNoHit() &&
+					hitPointOfLightRay.getHitObject() == hitpoint.getHitObject() &
+					hitPointOfLightRay.getPosition().equalsWithTol(hitpoint.getPosition())) {
 				Vector3 uIncidentRay = uRay.scale(-1).unit();
 				double cosOfAngle = uIncidentRay.dot(hitpoint.getuNormal());
 				if(cosOfAngle > 0) {
@@ -120,15 +131,28 @@ public class Scene {
 		return diffuse.scale(cumulativeIntensity);
 	}
 
-	private Color calcSpecular(HitpointData hitpoint, Color diffuse) {
-
-		return Color.black;
+	private Color calcSpecular(HitpointData hitpoint, Color diffuse, int numReflectionsLeft) {
+		if(numReflectionsLeft <= 0)
+			return Color.black;
+		if(diffuse.getR() == 0 && diffuse.getB() == 0 && diffuse.getB() == 0)
+			return Color.black;
+		Vector3 newBase = hitpoint.getPosition();
+		Vector3 projectionOfIncoming = hitpoint.getuIncoming().projectTo(hitpoint.getuNormal());
+		Vector3 uReflectedRay = hitpoint.getuIncoming().add(projectionOfIncoming.scale(-2)).unit();
+		HitpointData newHitpoint = getClosestHit(newBase, uReflectedRay, MIN_DISTANCE_OF_REFLECTION);
+		if(!newHitpoint.isHit())
+			return Color.black;
+		Color reflectionColor = makeColor(newHitpoint, numReflectionsLeft-1);
+		//scale reflectionColor by diffuse
+		Color result = new Color(diffuse.getR()*reflectionColor.getR(), diffuse.getG()*reflectionColor.getG(), diffuse.getB()*reflectionColor.getB());
+		
+		return result;
 	}
 
 	private HitpointData getClosestHit(Vector3 base, Vector3 uRay, double minDistance) {
 		assert uRay.isUnit();
 		double closestHitDist = Double.MAX_VALUE;
-		HitpointData closestHit = null;
+		HitpointData closestHit = HitpointData.getNoHit();
 		for(SceneObject so: sceneObjects) {
 			HitpointData hit = so.hit(base, uRay);
 			if(hit.isHit()) {

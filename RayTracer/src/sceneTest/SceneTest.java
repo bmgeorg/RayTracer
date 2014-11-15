@@ -19,7 +19,25 @@ public class SceneTest {
 	protected static String testFilesDir = "testFiles/Scenes/";
 	
 	@Test
-	public void twoLights() {
+	public void specularSpheres() {
+		Scene s = new Scene();
+		s.setBackgroundColor(new Pixel(Color.black));
+		s.setViewpoint(Viewpoint.getDefaultViewpoint());
+		s.addLight(new Light(new Vector3(5, 5, 5), 1));
+		Vector3 c1 = new Vector3(-2, -1, -6);
+		Vector3 c2 = new Vector3(2, 1, -6);
+		Sphere s1 = new Sphere(c1, 1.5, new Shading(new Color(1, 0, 0), new Color(.1, 0, 0), Color.black));
+		Sphere s2 = new Sphere(c2, 1.5, new Shading(new Color(0, 1, 1), new Color(0, .1, .1), new Color(.5, .5, .5)));
+		s.addSceneObject(s1);
+		s.addSceneObject(s2);
+		Pixel image[][] = s.render();
+		PPMLibrary.writePPMImage(testFilesDir + "specularSpheresTest.ppm", image);
+		Assert.assertTrue(TestUtils.filesEqual(testFilesDir + "specularSpheres.ppm", testFilesDir + "specularSpheresTest.ppm"));
+		TestUtils.removeFile(testFilesDir + "specularSpheresTest.ppm");
+	}
+	
+	@Test
+	public void twoLightsTwoSpheres() {
 		Scene s = new Scene();
 		s.setBackgroundColor(new Pixel(Color.black));
 		s.setViewpoint(Viewpoint.getDefaultViewpoint());
@@ -57,7 +75,7 @@ public class SceneTest {
 		s.setViewpoint(Viewpoint.getDefaultViewpoint());
 		Vector3 c = new Vector3(0, 0, -5);
 		double radius = 3;
-		s.addSceneObject(new Sphere(c, radius, new Shading(Color.green, Color.green, Color.green)));
+		s.addSceneObject(new Sphere(c, radius, new Shading(Color.black, Color.green, Color.black)));
 		Pixel image[][] = s.render();
 		PPMLibrary.writePPMImage(testFilesDir + "flatSphereTest.ppm", image);
 		Assert.assertTrue(TestUtils.filesEqual(testFilesDir + "flatSphere.ppm", testFilesDir + "flatSphereTest.ppm"));
