@@ -19,6 +19,23 @@ public class SceneTest {
 	protected static String testFilesDir = "testFiles/Scenes/";
 	
 	@Test
+	public void twoLights() {
+		Scene s = new Scene();
+		s.setBackgroundColor(new Pixel(Color.black));
+		s.setViewpoint(Viewpoint.getDefaultViewpoint());
+		s.addLight(new Light(new Vector3(5, 5, 5), .8));
+		s.addLight(new Light(new Vector3(-5, -5, -2), .3));
+		Vector3 c1 = new Vector3(-2, -1, -6);
+		Vector3 c2 = new Vector3(2, 1, -4);
+		s.addSceneObject(new Sphere(c1, 3, new Shading(new Color(0, 1, 0), new Color(0, .3, .3), Color.black)));
+		s.addSceneObject(new Sphere(c2, 2, new Shading(new Color(1, 0, 0), new Color(.1, 0, 0), Color.black)));
+		Pixel image[][] = s.render();
+		PPMLibrary.writePPMImage(testFilesDir + "twoLightsTwoSpheresTest.ppm", image);
+		Assert.assertTrue(TestUtils.filesEqual(testFilesDir + "twoLightsTwoSpheres.ppm", testFilesDir + "twoLightsTwoSpheresTest.ppm"));
+		TestUtils.removeFile(testFilesDir + "twoLightsTwoSpheresTest.ppm");
+	}
+	
+	@Test
 	public void oneLightOneSphere() {
 		Scene s = new Scene();
 		s.setBackgroundColor(new Pixel(Color.black));

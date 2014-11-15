@@ -59,6 +59,9 @@ public class Scene {
 			for(int col = 0; col < viewpoint.getImageWidth(); col++) {
 				Vector3 uRay = viewpoint.fireRay(col, row);
 
+				if(row == 328 && col == 98) {
+					System.err.println();
+				}
 				//TODO: min distance forms a bowl currently, instead of the plane of the screen
 				HitpointData closestHit = getClosestHit(viewpoint.getPosition(), uRay, viewpoint.getFrameDepth());
 				if(closestHit != null) {
@@ -102,15 +105,15 @@ public class Scene {
 			Vector3 uRay = hitpoint.getPosition().sub(light.getPosition()).unit();
 			//TODO: Optimization: never calculate closestHit for any given light more than once
 			HitpointData hitPointOfLightRay = getClosestHit(light.getPosition(), uRay, 0);
-			if(hitPointOfLightRay != null) {
-				if(hitPointOfLightRay.getHitObject() == hitpoint.getHitObject()) {
-					Vector3 uIncidentRay = uRay.scale(-1).unit();
-					double cosOfAngle = uIncidentRay.dot(hitpoint.getuNormal());
-					if(cosOfAngle > 0) {
-						cumulativeIntensity += cosOfAngle;
-					}
+			//If light hits point
+			if(		hitPointOfLightRay != null &&
+					hitPointOfLightRay.getHitObject() == hitpoint.getHitObject() /*&
+					/*hitPointOfLightRay.getPosition().equalsWithTol(hitpoint.getPosition())*/) {
+				Vector3 uIncidentRay = uRay.scale(-1).unit();
+				double cosOfAngle = uIncidentRay.dot(hitpoint.getuNormal());
+				if(cosOfAngle > 0) {
+					cumulativeIntensity += cosOfAngle*light.getBrightness();
 				}
-
 			}
 		}
 
@@ -133,6 +136,7 @@ public class Scene {
 				if(hit.getDistance() >= minDistance && 
 						hit.getDistance() < closestHitDist) {
 					closestHit = hit;
+					closestHitDist = hit.getDistance();
 				}
 			}
 		}
